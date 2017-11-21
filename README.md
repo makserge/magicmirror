@@ -57,6 +57,22 @@ Activate a connection->Choose network->Activate->Enter Wi-Fi password->Quit
 
 sudo apt-get update
 sudo apt-get upgrade
-apt-get install keyboard-configuration locales tzdata console-data task-lxde-desktop --install-recommends -f -y
+
+sudo apt-get install -y xorg lxde lightdm policykit-1
+
+7. Disable password prompt
+
+sudo su
+
+visudo
+
+look for the line:
+
+%sudo    ALL=(ALL:ALL) ALL
+and change it to:
+
+%sudo    ALL=(ALL:ALL) NOPASSWD: ALL
+
+
 
 
