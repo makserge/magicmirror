@@ -59,6 +59,7 @@ sudo apt-get update
 sudo apt-get upgrade
 
 sudo apt-get install -y xorg lxde lightdm policykit-1
+apt install lxde-common
 
 7. Disable password prompt
 
