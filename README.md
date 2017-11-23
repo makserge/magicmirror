@@ -93,10 +93,16 @@ and change it to:
 */
 
 
+0. NodeJS
+
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
+apt install -y nodejs
+
 git clone https://github.com/stacywebb/magicmirror_arm64
 
 cd /root/magicmirror_arm64
 
 apt install npm
 npm install
-DISPLAY=:0 npm start
+npm start
