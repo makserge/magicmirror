@@ -104,4 +104,9 @@ git clone https://github.com/stacywebb/magicmirror_arm64
 cd /root/magicmirror_arm64
 
 npm install
+
+apt install libxss1
+apt install libgconf-2-4
+apt install libnss3
+
 npm start
