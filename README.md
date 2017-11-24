@@ -103,6 +103,5 @@ git clone https://github.com/stacywebb/magicmirror_arm64
 
 cd /root/magicmirror_arm64
 
-apt install npm
 npm install
 npm start
