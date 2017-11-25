@@ -58,10 +58,14 @@ nmtui
 
 Activate a connection->Choose network->Activate->Enter Wi-Fi password->Quit
 
-6. Install XFCE
-
+6. Update system 
 apt update
 apt upgrade
+
+7. Install chromium
+apt install chromium-browser
+
+8. Install XFCE
 
 apt -y install xorg lightdm xfce4 tango-icon-theme gnome-icon-theme
 
@@ -109,5 +113,9 @@ cd /root/magicmirror_arm64
 npm install
 
 cp config/config.js.sample config/config.js
+
+cd vendor
+npm install
+cd ..
 
 npm start
