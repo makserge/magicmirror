@@ -102,9 +102,7 @@ and change it to:
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 
 apt install -y nodejs
-apt install libxss1
 apt install libgconf-2-4
-apt install libnss3
 
 git clone https://github.com/stacywebb/magicmirror_arm64
 
