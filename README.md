@@ -71,7 +71,11 @@ apt -y install xorg lightdm xfce4 tango-icon-theme gnome-icon-theme lightdm-gtk-
 
 nano /etc/lightdm/lightdm.conf.d/11-armbian.conf
 
+replace
 [SeatDefaults]
+
+to
+[Seat:*]
 
 replace
 user-session=ubuntu
@@ -79,39 +83,26 @@ user-session=ubuntu
 to
 user-session=xfce
 
-Check: startxfce4
+add to the end
 
-Autostart XFCE
+autologin-user=magicmirror
+autologin-user-timeout=0
 
-In order to make text boot the default under systemd (regardless of which distro, really):
-
-systemctl set-default multi-user.target
-To change back to booting to the GUI,
+9. Autostart XFCE
 
 systemctl set-default graphical.target
 
-/*
-
-7. Disable password prompt
-
-sudo su
-
-visudo
-
-look for the line:
-
-%sudo    ALL=(ALL:ALL) ALL
-and change it to:
-
-%sudo    ALL=(ALL:ALL) NOPASSWD: ALL
-*/
+(run systemctl set-default multi-user.target to return to console login
+and then startxfce4 after login)
 
 
-0. NodeJS
+10. NodeJS
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 
 apt install -y nodejs
+
+11. Magic Mirror
 apt install libgconf-2-4
 
 git clone https://github.com/stacywebb/magicmirror_arm64
