@@ -1,4 +1,4 @@
-# magicmirror
+# MagicMirror using OrangePI Zero Plus 2 H5 and WaveShare 4 inch IPS LCD
 
 1. Download
 Armbian_5.34.171119_Orangepizeroplus2-h5_Ubuntu_xenial_next_4.13.13
