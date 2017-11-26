@@ -102,7 +102,28 @@ npm start
 
 13. Autostart MagicMirror
 
-Applications->Settings-Session and Startup->Application Autostart->Add
+mv magicmirror_arm64 /home/magicmirror/MagicMirror/
 
-Name: MagicMirror
-Command: node /root/magicmirror_arm64/index.js
+chown -R magicmirror.magicmirror /home/magicmirror/MagicMirror/
+
+npm install -g pm2
+pm2 startup
+
+As magicmirror user:
+
+cd /home/magicmirror
+
+nano mm.sh
+
+add
+cd ~/MagicMirror
+DISPLAY=:0 npm start
+
+chmod +x mm.sh
+
+In XFCE Applications->Settings->Session and Startup->Application Autostart->Add
+
+Name: Magic Mirror
+Command: /home/magicmirror/mm.sh
+
+Press OK
