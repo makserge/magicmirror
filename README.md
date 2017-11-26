@@ -127,3 +127,18 @@ Name: Magic Mirror
 Command: /home/magicmirror/mm.sh
 
 Press OK
+
+14. TightVNC
+
+apt install tightvncserver
+
+Start
+tightvncserver :1 -geometry 800x480 -dpi 96 -nolisten tcp
+
+Stop
+tightvncserver -kill :1
+
+Connect
+http://www.tightvnc.com/download.php
+
+ipaddress:5901
