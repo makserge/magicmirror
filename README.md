@@ -1,7 +1,8 @@
 # magicmirror
 
 1. Download
-https://dl.armbian.com/orangepizeroplus2-h5/Ubuntu_xenial_next_nightly.7z
+Armbian_5.34.171119_Orangepizeroplus2-h5_Ubuntu_xenial_next_4.13.13
+from armbian.com
 
 2. Flash using Etcher
 https://etcher.io
