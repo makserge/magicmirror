@@ -67,7 +67,17 @@ apt install chromium-browser
 
 8. Install XFCE
 
-apt -y install xorg lightdm xfce4 tango-icon-theme gnome-icon-theme
+apt -y install xorg lightdm xfce4 tango-icon-theme gnome-icon-theme lightdm-gtk-greeter
+
+nano /etc/lightdm/lightdm.conf.d/11-armbian.conf
+
+[SeatDefaults]
+
+replace
+user-session=ubuntu
+
+to
+user-session=xfce
 
 Check: startxfce4
 
