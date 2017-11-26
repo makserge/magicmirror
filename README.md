@@ -102,3 +102,7 @@ npm start
 
 13. Autostart MagicMirror
 
+Applications->Settings-Session and Startup->Application Autostart->Add
+
+Name: MagicMirror
+Command: node /root/magicmirror_arm64/index.js
