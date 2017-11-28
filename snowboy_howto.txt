@@ -1,0 +1,41 @@
+Snowboy HowTo
+
+mkdir snowboy
+cd snowboy
+
+npm init
+
+package name: (snowboy-kws)
+version: (1.0.0)
+description:
+entry point: (index.js) 
+test command:
+git repository: https://github.com/makserge/magicmirror/
+keywords: snowboy, magicmirror
+author:
+license: (ISC) MIT
+Is this ok? (yes)
+
+nano package.json
+
+add
+
+"binary": {
+    "module_name": "snowboy-aarch64",
+    "module_path": "./lib/",
+    "host": ""
+}
+
+apt install swig3.0 python-pyaudio python3-pyaudio sox python-pip libatlas-base-dev
+
+npm install node-record-lpcm16
+
+pip install --upgrade pip
+
+pip install pyaudio
+
+npm install --save snowboy
+
+npm install node-pre-gyp -g
+
+node-pre-gyp clean configure build
