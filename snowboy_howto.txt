@@ -16,15 +16,6 @@ author:
 license: (ISC) MIT
 Is this ok? (yes)
 
-nano package.json
-
-add
-
-"binary": {
-    "module_name": "snowboy-aarch64",
-    "module_path": "./lib/",
-    "host": ""
-}
 
 apt install swig3.0 python-pyaudio python3-pyaudio sox python-pip libatlas-base-dev
 
@@ -36,6 +27,9 @@ pip install pyaudio
 
 npm install --save snowboy
 
-npm install node-pre-gyp -g
 
-node-pre-gyp clean configure build
+
+https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/pine64-debian-jessie-1.1.1.tar.bz2
+tar xjvf pine*.b22
+
+https://sigmdel.ca/michel/ha/opi/snowboy_01_en.html
