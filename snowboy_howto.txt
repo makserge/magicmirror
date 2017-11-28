@@ -17,7 +17,7 @@ license: (ISC) MIT
 Is this ok? (yes)
 
 
-apt install swig3.0 python-pyaudio python3-pyaudio sox python-pip libatlas-base-dev
+apt install swig3.0 python-pyaudio python3-pyaudio sox python-pip libatlas-base-dev python-dev
 
 npm install node-record-lpcm16
 
@@ -33,3 +33,4 @@ https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/pine64-debian-jessie
 tar xjvf pine*.b22
 
 https://sigmdel.ca/michel/ha/opi/snowboy_01_en.html
+
