@@ -1,5 +1,14 @@
 Snowboy HowTo
 
+Download driver from https://www.silabs.com/Support%20Documents/Software/Mac_OSX_VCP_Driver.zip
+Install driver as .dmg app
+MacOS manually load CP2102 driver
+
+sudo kextutil /Library/Extensions/SiLabsUSBDriver.kext
+
+screen /dev/tty.SLAB_USBtoUART 115200
+
+
 mkdir snowboy
 cd snowboy
 
