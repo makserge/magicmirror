@@ -14,7 +14,7 @@ armbian-config->system->hardware->analog-codec->save
 
 check audio card
 
-at /proc/asound/cards
+cat /proc/asound/cards
  0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
                       H3 Audio Codec
  1 [UAC20          ]: USB-Audio - ReSpeaker MicArray UAC2.0
