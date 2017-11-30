@@ -8,6 +8,18 @@ sudo kextutil /Library/Extensions/SiLabsUSBDriver.kext
 
 screen /dev/tty.SLAB_USBtoUART 115200
 
+enable internal audio
+
+armbian-config->system->hardware->analog-codec->save
+
+check audio card
+
+at /proc/asound/cards
+ 0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
+                      H3 Audio Codec
+ 1 [UAC20          ]: USB-Audio - ReSpeaker MicArray UAC2.0
+                      SeeedStudio ReSpeaker MicArray UAC2.0 at usb-1c1c400.usb-1, full speed
+
 
 mkdir snowboy
 cd snowboy
