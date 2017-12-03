@@ -1,0 +1,113 @@
+1. Download 
+http://dietpi.com/downloads/images/DietPi_OrangePiZero2PlusH5-arm64-(Jessie).7z
+
+2. Download https://www.sdcard.org/downloads/formatter_4/eula_windows/index.html
+Format with options - format size adjustment - on
+
+3. Download
+http://rufus.akeo.ie/downloads/rufus-2.11p.exe
+Make sd card as DD
+
+4. Open serial console and login as dietpi / dietpi
+
+5. Allow to finish update
+and install ALSA in software
+after reboot ssh again
+
+select dietpi-config->audio options->Soundcard:usb-dac->Back->Exit
+
+6. Ensure that dietpi is part of the audio group.
+
+groups dietpi
+dietpi : dietpi adm tty dialout cdrom sudo audio www-data video plugdev games users input netdev
+
+7. Check audio cards 
+
+aplay -l
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: Codec [H3 Audio Codec], device 0: CDC PCM Codec-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: UAC20 [ReSpeaker MicArray UAC2.0], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+nano /etc/asound.conf
+
+pcm.!default {
+    type hw
+    card 1
+    device 0
+}
+ctl.!default {
+    type hw
+    card 1
+}
+
+
+9. Install Python 2
+
+sudo apt install python-dev python-virtualenv
+
+sudo apt-get install virtualenv
+
+virtualenv env --no-site-packages
+env/bin/pip install pip setuptools --upgrade
+source /home/dietpi/env/bin/activate 
+pip install pyaudio
+
+
+
+10. Installing Python Audio Prerequisites
+sudo apt install gcc
+sudo apt install portaudio19-dev libffi-dev libssl-dev
+sudo apt install python3-pyaudio sox
+sudo apt install libatlas-base-dev
+
+
+11. Install Snowboy
+
+wget https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/rpi-arm-raspbian-8.0-1.1.1.tar.bz2
+tar xjvf rpi*.bz2
+mv rpi*.1 snowboy
+
+wget https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/pine64-debian-jessie-1.1.1.tar.bz2
+tar xjvf pine*.bz2
+
+mv pine64-debian-jessie-1.1.1 snowgoog
+
+cd snowboy
+mv _snowboydetect.so _snowboydetect.so_py32
+cp ../snowgoog/_snowboydetect.so _snowboydetect.so
+
+python demo.py resources/snowboy.umdl
+
+nano /usr/share/alsa/alsa.conf
+
+comment out 
+
+defaults.pcm.surround21.card defaults.pcm.card
+defaults.pcm.surround41.card defaults.pcm.card
+defaults.pcm.surround50.card defaults.pcm.card
+defaults.pcm.surround51.card defaults.pcm.card
+defaults.pcm.surround71.card defaults.pcm.card
+
+pcm.front cards.pcm.front
+pcm.rear cards.pcm.rear
+pcm.center_lfe cards.pcm.center_lfe
+pcm.side cards.pcm.side
+pcm.surround21 cards.pcm.surround21
+pcm.surround40 cards.pcm.surround40
+pcm.surround41 cards.pcm.surround41
+pcm.surround50 cards.pcm.surround50
+pcm.surround51 cards.pcm.surround51
+pcm.surround71 cards.pcm.surround71
+pcm.iec958 cards.pcm.iec958
+pcm.spdif iec958
+pcm.hdmi cards.pcm.hdmi
+pcm.modem cards.pcm.modem
+pcm.phoneline cards.pcm.phoneline
+
+Check record 
+arecord -M -f S24_3LE -r 16000 -c 2 --buffer-size=204800 -v /tmp/sample.wav
