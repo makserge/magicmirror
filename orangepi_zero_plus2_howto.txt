@@ -111,3 +111,29 @@ pcm.phoneline cards.pcm.phoneline
 
 Check record 
 arecord -M -f S24_3LE -r 16000 -c 2 --buffer-size=204800 -v /tmp/sample.wav
+
+12. Node JS code
+
+sudo apt-get remove nodejs npm
+
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+nvm install v8.9.1
+sudo apt install aptitude
+sudo aptitude install npm
+
+
+mkdir snowboy-vas
+cd snowboy-vas
+
+npm init
+
+package name: (snowboy-vas)
+version: (1.0.0)
+description:
+entry point: (index.js) 
+test command:
+git repository: https://github.com/makserge/magicmirror/
+keywords: snowboy, magicmirror
+author:
+license: (ISC) MIT
+Is this ok? (yes)
