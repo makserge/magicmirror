@@ -116,6 +116,11 @@ arecord -M -f S24_3LE -r 16000 -c 2 --buffer-size=204800 -v /tmp/sample.wav
 
 sudo apt-get remove nodejs npm
 
+Global setup
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+apt install -y nodejs
+
+Local setup
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 nvm install v8.9.1
 sudo apt install aptitude
