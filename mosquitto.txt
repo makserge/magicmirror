@@ -1,0 +1,101 @@
+Misquitto setup on DietPi OrangePi Zero Plus 2 H5
+
+1. Install server
+dietpi-software
+Software Optimized->Mosquitto->Ok->Install->Ok
+
+2. Install console client
+
+sudo apt-get install mosquitto-clients
+
+3. Configuration
+
+sudo /etc/init.d/mosquitto stop
+
+sudo nano /etc/mosquitto/mosquitto.conf
+
+replace 
+
+log_dest file /var/log/mosquitto/mosquitto.log
+
+to 
+
+log_dest topic
+
+log_type error
+log_type warning
+log_type notice
+log_type information
+
+connection_messages true
+log_timestamp true
+
+4. Check
+sudo /etc/init.d/mosquitto start
+
+In first console
+mosquitto_sub -d -t hello/world
+
+Client mosqsub/2507-DietPi sending CONNECT
+Client mosqsub/2507-DietPi received CONNACK
+Client mosqsub/2507-DietPi sending SUBSCRIBE (Mid: 1, Topic: hello/world, QoS: 0)
+Client mosqsub/2507-DietPi received SUBACK
+Subscribed (mid: 1): 0
+
+In second console
+
+mosquitto_pub -d -t hello/world -m "Hello from Terminal window 2!"
+
+Client mosqpub/2740-DietPi sending CONNECT
+Client mosqpub/2740-DietPi received CONNACK
+Client mosqpub/2740-DietPi sending PUBLISH (d0, q0, r0, m1, 'hello/world', ... (29 bytes))
+Client mosqpub/2740-DietPi sending DISCONNECT
+
+Check in first console for 
+
+Client mosqsub/2507-DietPi sending PINGREQ
+Client mosqsub/2507-DietPi received PINGRESP
+Client mosqsub/2507-DietPi received PUBLISH (d0, q0, r0, m0, 'hello/world', ... (29 bytes))
+Hello from Terminal window 2!
+
+5. Check broker status
+sudo /etc/init.d/mosquitto status
+
+ mosquitto.service - LSB: mosquitto MQTT v3.1 message broker
+   Loaded: loaded (/etc/init.d/mosquitto)
+   Active: active (running) since Sun 2017-12-03 22:35:11 GMT; 3min 44s ago
+  Process: 2485 ExecStart=/etc/init.d/mosquitto start (code=exited, status=0/SUCCESS)
+   CGroup: /system.slice/mosquitto.service
+           └─2489 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+
+Dec 03 22:35:11 DietPi mosquitto[2485]: Starting network daemon:: mosquitto.
+Dec 03 22:35:11 DietPi systemd[1]: Started LSB: mosquitto MQTT v3.1 message...r.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+6. Setup password
+
+sudo mosquitto_passwd -c /etc/mosquitto/passwd smhome
+Password:
+
+sudo nano /etc/mosquitto/conf.d/default.conf
+add
+
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+
+sudo systemctl restart mosquitto
+
+mosquitto_sub -v -u 'smhome' -P 'smhome' -d -t hello/world
+
+Client mosqsub/2774-DietPi sending CONNECT
+Client mosqsub/2774-DietPi received CONNACK
+Client mosqsub/2774-DietPi sending SUBSCRIBE (Mid: 1, Topic: hello/world, QoS: 0)
+Client mosqsub/2774-DietPi received SUBACK
+Subscribed (mid: 1): 0
+
+mosquitto_pub  -u 'smhome' -P 'smhome' -d -t hello/world -m "Hello from Terminal window 2!"
+
+Client mosqpub/2775-DietPi sending CONNECT
+Client mosqpub/2775-DietPi received CONNACK
+Client mosqpub/2775-DietPi sending PUBLISH (d0, q0, r0, m1, 'hello/world', ... (29 bytes))
+Client mosqpub/2775-DietPi sending DISCONNECT
