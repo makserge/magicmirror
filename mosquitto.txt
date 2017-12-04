@@ -136,3 +136,5 @@ Subscriptions and received messages->New
 Topic filter: #
 
 Press Subscribe
+
+https://esp8266.ru/esp8266-openwrt-mosquitto-mqttwarn-thingspeak-email-android-ios-twitter-cloudmqtt/#mosquitto
