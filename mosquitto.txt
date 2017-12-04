@@ -99,3 +99,40 @@ Client mosqpub/2775-DietPi sending CONNECT
 Client mosqpub/2775-DietPi received CONNACK
 Client mosqpub/2775-DietPi sending PUBLISH (d0, q0, r0, m1, 'hello/world', ... (29 bytes))
 Client mosqpub/2775-DietPi sending DISCONNECT
+
+7. MQTT-spy
+
+https://github.com/eclipse/paho.mqtt-spy
+
+Download 
+https://github.com/eclipse/paho.mqtt-spy/releases/download/1.0.0/mqtt-spy-1.0.0.jar
+
+Start
+java -jar mqtt-spy-1.0.0.jar
+
+Config
+Click on "No configuration file found"->Create mqtt-spy configuration file with sample content
+Click Connections -> New connection
+
+Connectivity
+Server URI: 192.168.43.96
+
+Security
+Enable user authentication
+
+Username: smhome
+Password: smhome
+
+Click Apply
+
+Connect
+Connections -> Manage connections->Select connection->Open Connection
+
+Subscribe to all topics
+
+Click on tab with connection name
+Subscriptions and received messages->New
+
+Topic filter: #
+
+Press Subscribe
