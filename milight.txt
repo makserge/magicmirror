@@ -1,0 +1,40 @@
+Mi-light RGB lamps howto
+
+1. Connect NRF24 module to ESP-2866 (NodeMCU) module
+
+Proof http://blog.christophermullins.com/2017/02/11/milight-wifi-gateway-emulator-on-an-esp8266/
+
+NodeMCU Pin 	NRF24L01+ Pin
+3.3V        	VCC
+G  	          GND
+D0            CE
+D5 (HSCLK)    SCK
+D6 (HMISO)    MISO
+D7 (HMOSI)    MOSI
+D8 (HCS)      CSN
+
+2. Download firmware
+
+https://github.com/sidoh/esp8266_milight_hub/releases/download/1.6.2/esp8266_milight_hub_nodemcuv2-1.6.2.bin
+
+2. Download NodeMCU flasher 
+https://github.com/nodemcu/nodemcu-flasher
+
+3. Flash firmware
+
+Connect NodeMCU to USB and start ESP8266Flasher.exe
+On 'Operation' tab select COM port of NodeMCU
+On 'Config' tab choose firmware
+On 'Advanced' tab select COM port baudrate
+
+On 'Operation' tab press 'Flash' and wait until operation completed
+
+4. Reboot NodeMCU
+5. Setup WiFi using WifiManager (https://github.com/tzapu/WiFiManager)
+6. Open webbrowser on url of NodeMCU (like http://192.168.31.107/)
+7. Pair lamp
+
+Enter Device Id (any value from 1 to 65535)
+Power off bulb than power on and press 'Pair' within 1 second
+
+8. Check if lamp can be controlled (switch on-off, adjust brightness and hue)
