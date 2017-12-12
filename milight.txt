@@ -38,3 +38,30 @@ Enter Device Id (any value from 1 to 65535)
 Power off bulb than power on and press 'Pair' within 1 second
 
 8. Check if lamp can be controlled (switch on-off, adjust brightness and hue)
+
+9. MQTT
+Open URL of NodeMCU (like http://192.168.31.107)
+
+Set 
+mqtt_server - can be an IP or hostname. Specify the port here (e.g., mymqttserver.com:1234) if it's not the default (1883).
+mqtt_username / mqtt_password - if you have auth enabled on your MQTT server.
+mqtt_topic_pattern - set this to milight/:device_id/:device_type/:group_id.
+mqtt_update_topic_pattern - set this to milight/updates/:device_id/:device_type/:group_id.
+
+10. Test MQTT for Lamp with ID: 1 and Group: 1
+
+Topic: milight/0x1/rgbw/1
+
+On
+Data: {"state":"on"} 
+
+Off
+Data: {"state":"off"}
+
+Brightness 0-255
+{"brightness":"255"}
+
+Hue 0-359
+{"hue":"255"}
+
+
