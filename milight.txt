@@ -64,4 +64,5 @@ Brightness 0-255
 Hue 0-359
 {"hue":"255"}
 
-
+Combinations of params
+{"hue":"150", "brightness":"100","state":"on"}
