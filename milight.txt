@@ -53,16 +53,22 @@ mqtt_update_topic_pattern - set this to milight/updates/:device_id/:device_type/
 Topic: milight/0x1/rgbw/1
 
 On
-Data: {"state":"on"} 
+{"state":"on"} 
 
 Off
-Data: {"state":"off"}
+{"state":"off"}
 
 Brightness 0-255
 {"brightness":"255"}
 
 Hue 0-359
 {"hue":"255"}
+
+White only
+{"command":"set_white"}
+
+Night mode
+{"command":"night_mode","state":"on"}
 
 Combinations of params
 {"hue":"150", "brightness":"100","state":"on"}
