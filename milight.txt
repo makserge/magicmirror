@@ -72,3 +72,11 @@ Night mode
 
 Combinations of params
 {"hue":"150", "brightness":"100","state":"on"}
+
+11. Restore default settings from milight_esp2866_default_settings.json
+
+In Web UI: Restore Settings->Pick file->Submit
+
+12. Save settings
+
+In Web UI: Backup Settings->Save to same folder
