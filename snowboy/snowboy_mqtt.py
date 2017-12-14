@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import snowboydecoder
+import sys
+import wave
 import paho.mqtt.client as mqtt
 
 clientName = "Snowboy"

@@ -60,11 +60,20 @@ python2 demo.py resources/snowboy.umdl
 
 
 
+MQTT client
+
+sudo apt-get install libatlas-base-dev
+sudo apt-get install portaudio19-dev
 sudo apt-get install python-dev
 sudo apt-get install python-pip
 pip install --upgrade pip
 pip install setuptools
 pip install paho-mqtt
+pip install pyaudio
+
+Test
+python demo3.py resources/snowboy.wav resources/snowboy.umdl
+python demo2.py resources/snowboy.umdl resources/jarvis.pmdl
 
 chmod +x snowboy_mqtt.py
 ./snowboy_mqtt.py
