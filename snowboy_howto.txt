@@ -57,3 +57,14 @@ https://sigmdel.ca/michel/ha/opi/snowboy_01_en.html
 
 cd snowboy/1/pine64-debian-jessie-1.1.1/
 python2 demo.py resources/snowboy.umdl
+
+
+
+sudo apt-get install python-dev
+sudo apt-get install python-pip
+pip install --upgrade pip
+pip install setuptools
+pip install paho-mqtt
+
+chmod +x snowboy_mqtt.py
+./snowboy_mqtt.py
