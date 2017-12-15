@@ -1,5 +1,6 @@
-Snowboy HowTo
+Respeaker Snowboy HowTo on Armbian 4.x kerenl
 
+0. Console on MacOs
 Download driver from https://www.silabs.com/Support%20Documents/Software/Mac_OSX_VCP_Driver.zip
 Install driver as .dmg app
 MacOS manually load CP2102 driver
@@ -8,11 +9,13 @@ sudo kextutil /Library/Extensions/SiLabsUSBDriver.kext
 
 screen /dev/tty.SLAB_USBtoUART 115200
 
-enable internal audio
+1. Setup Armbian from armbian.com for NanoPi NEO.
 
-armbian-config->system->hardware->analog-codec->save
+2. Enable internal audio
 
-check audio card
+armbian-config->system->hardware->analog-codec->save->reboot
+
+3. Check audio card
 
 cat /proc/asound/cards
  0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
@@ -20,47 +23,49 @@ cat /proc/asound/cards
  1 [UAC20          ]: USB-Audio - ReSpeaker MicArray UAC2.0
                       SeeedStudio ReSpeaker MicArray UAC2.0 at usb-1c1c400.usb-1, full speed
 
+4. Setup audio config
+nano /etc/asound.conf
 
-mkdir snowboy
-cd snowboy
+pcm.!default {
+    type hw
+    card 1
+    device 0
+}
+ctl.!default {
+    type hw
+    card 1
+}
 
-npm init
+nano /usr/share/alsa/alsa.conf
 
-package name: (snowboy-kws)
-version: (1.0.0)
-description:
-entry point: (index.js) 
-test command:
-git repository: https://github.com/makserge/magicmirror/
-keywords: snowboy, magicmirror
-author:
-license: (ISC) MIT
-Is this ok? (yes)
+comment out 
 
+defaults.pcm.surround21.card defaults.pcm.card
+defaults.pcm.surround41.card defaults.pcm.card
+defaults.pcm.surround50.card defaults.pcm.card
+defaults.pcm.surround51.card defaults.pcm.card
+defaults.pcm.surround71.card defaults.pcm.card
 
-apt install swig3.0 python-pyaudio python3-pyaudio sox python-pip libatlas-base-dev python-dev
+pcm.front cards.pcm.front
+pcm.rear cards.pcm.rear
+pcm.center_lfe cards.pcm.center_lfe
+pcm.side cards.pcm.side
+pcm.surround21 cards.pcm.surround21
+pcm.surround40 cards.pcm.surround40
+pcm.surround41 cards.pcm.surround41
+pcm.surround50 cards.pcm.surround50
+pcm.surround51 cards.pcm.surround51
+pcm.surround71 cards.pcm.surround71
+pcm.iec958 cards.pcm.iec958
+pcm.spdif iec958
+pcm.hdmi cards.pcm.hdmi
+pcm.modem cards.pcm.modem
+pcm.phoneline cards.pcm.phoneline
 
-npm install node-record-lpcm16
+5. Check record 
+arecord -M -f S24_3LE -r 16000 -c 2 --buffer-size=204800 -v /tmp/sample.wav
 
-pip install --upgrade pip
-
-pip install pyaudio
-
-npm install --save snowboy
-
-
-
-https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/pine64-debian-jessie-1.1.1.tar.bz2
-tar xjvf pine*.b22
-
-https://sigmdel.ca/michel/ha/opi/snowboy_01_en.html
-
-cd snowboy/1/pine64-debian-jessie-1.1.1/
-python2 demo.py resources/snowboy.umdl
-
-
-
-MQTT client
+6. Install dependencies
 
 sudo apt-get install libatlas-base-dev
 sudo apt-get install portaudio19-dev
@@ -71,9 +76,86 @@ pip install setuptools
 pip install paho-mqtt
 pip install pyaudio
 
-Test
+Download snowboy binary and samples for ARM 32 bit 
+Proof: https://snowboy.kitt.ai/docspartials/docs/index.html
+
+wget https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/rpi-arm-raspbian-8.0-1.0.4.tar.bz2
+tar xvjf rpi-arm-raspbian-8.0-1.0.4.tar.bz2
+wget https://github.com/Kitt-AI/snowboy/blob/master/resources/snowboy.wav?raw=true -O rpi-arm-raspbian-8.0-1.0.4/resources/snowboy.wav
+
+/*
+Note for 64 bit only (OrangePi Zero Plus 2)!
+Proof: https://sigmdel.ca/michel/ha/opi/snowboy_01_en.html
+
+Download 64 bit Snowboy ARM binary
+wget https://s3-us-west-2.amazonaws.com/snowboy/snowboy-releases/pine64-debian-jessie-1.1.1.tar.bz2
+tar xjvf pine64-debian-jessie-1.1.1.tar.bz2
+cd pine64-debian-jessie-1.1.1/
+
+Grab _snowboydetect.so and replace default one from 32 bit Snowboy package
+*/
+
+7. Prepare test of Snowboy setup
+cd rpi-arm-raspbian-8.0-1.0.4 
+
+nano demo3.py
+
+import snowboydecoder
+import sys
+import wave
+
+# Demo code for detecting hotword in a .wav file
+# Example Usage:
+#  $ python demo3.py resources/snowboy.wav resources/snowboy.umdl
+# Should print:
+#  Hotword Detected!
+#
+#  $ python demo3.py resources/ding.wav resources/snowboy.umdl
+# Should print:
+#  Hotword Not Detected!
+
+if len(sys.argv) != 3:
+    print("Error: need to specify wave file name and model name")
+    print("Usage: python demo3.py wave_file model_file")
+    sys.exit(-1)
+
+wave_file = sys.argv[1]
+model_file = sys.argv[2]
+
+f = wave.open(wave_file)
+#assert f.getnchannels() == 1, "Error: Snowboy only supports 1 channel of audio $
+#assert f.getframerate() == 16000, "Error: Snowboy only supports 16K sampling ra$
+assert f.getsampwidth() == 2, "Error: Snowboy only supports 16bit per sample"
+data = f.readframes(f.getnframes())
+f.close()
+
+sensitivity = 0.5
+detection = snowboydecoder.HotwordDetector(model_file, sensitivity=sensitivity)
+
+ans = detection.detector.RunDetection(data)
+
+if ans == 1:
+    print('Hotword Detected!')
+else:
+    print('Hotword Not Detected!')
+
+
+8. Test snowboy setup
+
+For WAV file
 python demo3.py resources/snowboy.wav resources/snowboy.umdl
+Check if message appears
+Hotword Detected!
+
+For mic input
+Download pretrained model for "jarvis" keyword from https://snowboy.kitt.ai/
+
 python demo2.py resources/snowboy.umdl resources/jarvis.pmdl
+Tell "jarvis" and check if message like this appeared
+
+INFO:snowboy:Keyword 2 detected at time: 2017-12-15 11:27:17
+
+9. Python MQTT client
 
 chmod +x snowboy_mqtt.py
 ./snowboy_mqtt.py
