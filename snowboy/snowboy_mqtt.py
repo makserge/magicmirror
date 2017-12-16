@@ -2,40 +2,68 @@
 # -*- coding: utf-8 -*-
 import snowboydecoder
 import sys
-import wave
+import signal
 import paho.mqtt.client as mqtt
 
 clientName = "Snowboy"
 serverAddress = "192.168.31.103"
 
+#models = ["resources/weather.pmdl", 
+#		  "resources/light_on.pmdl",
+#		  "resources/light_off.pmdl"
+#		 ]
+models = ["resources/snowboy.umdl","resources/smart_mirror.umdl"]
+
+interrupted = False
+
+def weatherCallback():
+	print("Smart mirror!")
+	#snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
+	#mqttClient.publish("snowboy/hotword", "{'keyword': 'weather'}")
+	
+def lightOnCallback():
+	print("Jarvis")
+	#snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
+	#mqttClient.publish("snowboy/hotword", "{'keyword': 'light_on'}")
+
+def lightOffCallback():
+	print("Snowboy")
+	#snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
+	#mqttClient.publish("snowboy/hotword", "{'keyword': 'light_off'}")	
+	
 def connectionStatus(client, userdata, flags, rc):
-	mqttClient.subscribe("rpi/gpio")
+	print("Connected ot MQTT broker...")
 
-def messageDecoder(client, userdata, msg):
-	message = msg.payload.decode(encoding='UTF-8')
-	
-	if message == "on":
-		print("LED is ON!")
-	elif message == "off":
-		print("LED is OFF!")
-	else:
-		print("Unknown message!")
-		
 def onPublish(client, userdata, result):
-	print("data published \n")
-	print("\nresult:")
+	print("data published with result")
 	print(result)
+
+def signalHandler(signal, frame):
+    global interrupted
+    interrupted = True
+
+def interruptCallback():
+    global interrupted
+    return interrupted
 	
-	
-mqttClient = mqtt.Client(clientName)
+#mqttClient = mqtt.Client(clientName)
 
-mqttClient.on_connect = connectionStatus
-mqttClient.on_message = messageDecoder
-mqttClient.on_publish = onPublish
+#mqttClient.on_connect = connectionStatus
+#mqttClient.on_publish = onPublish
 
-mqttClient.connect(serverAddress)
-print("Connected...")
+#mqttClient.connect(serverAddress)
 
-mqttClient.publish("house/bulb1", "on")
+# capture SIGINT signal, e.g., Ctrl+C
+signal.signal(signal.SIGINT, signalHandler)
 
-#mqttClient.loop_forever()
+sensitivity = 1#[0.5]*len(models)
+detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity, audio_gain=2)
+print('Listening... Press Ctrl+C to exit')
+
+callbacks = [lightOffCallback,weatherCallback]
+
+detector.start(detected_callback=callbacks,
+               interrupt_check=interruptCallback,
+               sleep_time=0.03)
+
+detector.terminate()
