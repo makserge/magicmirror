@@ -1,0 +1,18 @@
+Node-red MQTT Howto
+
+0. Login a s regular user
+
+1. Install Node-Red
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo npm install -g --unsafe-perm node-red
+
+sudo npm install -g pm2
+pm2 start /usr/bin/node-red
+pm2 save
+pm2 startup
+
+1. Open Node-Red dashboard
+http://192.168.43.253:1880
+
+Proof: https://forum.armbian.com/topic/4434-iot-with-an-orangepi-zero-node-red-mosquitto-esp8266nrf24l01/
