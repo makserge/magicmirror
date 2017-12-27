@@ -1,0 +1,100 @@
+Respeaker Mic Array Snowboy Bing MQTT HowTo on Armbian 4.x kerenl
+
+0. Setup hardware:
+Connect USB host from Nanopi Neo Air according pinout
+
+https://github.com/SeeedDocument/Respeaker_Core/raw/master/img/respeaker_core_pinmap.png
+
+Mic Array     Nanopi Neo Air
+USBDP         USB1 D+
+USBDM         USB1 D-
+VDD 5V        5V
+GND           GND
+
+Update Mic array firmware to support 8 channel mode
+https://github.com/Fuhua-Chen/ReSpeaker_Microphone_Array_Firmware/blob/master/raw/ReSpeaker_Mic_Array_firmware_raw_0x83_20170601.bin
+
+1. Setup Armbian from armbian.com for NanoPi NEO Air.
+
+2. Enable internal audio
+
+armbian-config->system->hardware->analog-codec->save->reboot
+
+3. Check audio card
+
+cat /proc/asound/cards
+ 0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
+                      H3 Audio Codec
+ 1 [UAC20          ]: USB-Audio - ReSpeaker MicArray UAC2.0
+                      SeeedStudio ReSpeaker MicArray UAC2.0 at usb-1c1c400.usb-1, full speed
+
+4. Setup audio config
+nano /etc/asound.conf
+
+pcm.!default {
+    type hw
+    card 1
+    device 0
+}
+ctl.!default {
+    type hw
+    card 1
+}
+
+nano /usr/share/alsa/alsa.conf
+
+comment out 
+
+defaults.pcm.surround21.card defaults.pcm.card
+defaults.pcm.surround41.card defaults.pcm.card
+defaults.pcm.surround50.card defaults.pcm.card
+defaults.pcm.surround51.card defaults.pcm.card
+defaults.pcm.surround71.card defaults.pcm.card
+
+pcm.front cards.pcm.front
+pcm.rear cards.pcm.rear
+pcm.center_lfe cards.pcm.center_lfe
+pcm.side cards.pcm.side
+pcm.surround21 cards.pcm.surround21
+pcm.surround40 cards.pcm.surround40
+pcm.surround41 cards.pcm.surround41
+pcm.surround50 cards.pcm.surround50
+pcm.surround51 cards.pcm.surround51
+pcm.surround71 cards.pcm.surround71
+pcm.iec958 cards.pcm.iec958
+pcm.spdif iec958
+pcm.hdmi cards.pcm.hdmi
+pcm.modem cards.pcm.modem
+pcm.phoneline cards.pcm.phoneline
+
+5. Obtain Bing API key
+
+Go to https://azure.microsoft.com/ru-ru/services/cognitive-services/speech/
+then https://azure.microsoft.com/ru-ru/try/cognitive-services/?api=speech-api
+Choose get API key
+
+6. Install dependencies
+
+sudo apt-get install libatlas-base-dev
+sudo apt-get install portaudio19-dev
+sudo apt-get install python-dev
+sudo apt-get install python-pip
+sudo apt-get install python-numpy
+pip install --upgrade pip
+pip install setuptools
+pip install paho-mqtt
+pip install pyaudio
+pip install requests
+pip install monotonic
+pip install webrtcvad
+pip install pyusb
+
+git clone https://github.com/respeaker/respeaker_python_library.git
+cp -R respeaker_python_library/respeaker respeaker
+
+wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/bing_speech_api.py
+wget https://raw.githubusercontent.com/respeaker/mic_array/master/mic_array.py
+wget https://raw.githubusercontent.com/respeaker/mic_array/master/gcc_phat.py
+wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/pixel_ring.py
+mkdir usb_hid
+wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/spi.py
