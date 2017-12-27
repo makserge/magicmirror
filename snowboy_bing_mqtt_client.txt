@@ -76,7 +76,18 @@ sudo apt-get install libatlas-base-dev
 sudo apt-get install portaudio19-dev
 sudo apt-get install python-dev
 sudo apt-get install python-pip
+sudo apt-get install python-numpy
 pip install --upgrade pip
 pip install setuptools
 pip install paho-mqtt
 pip install pyaudio
+pip install requests
+pip install monotonic
+
+
+wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/bing_speech_api.py
+wget https://raw.githubusercontent.com/respeaker/mic_array/master/mic_array.py
+wget https://raw.githubusercontent.com/respeaker/mic_array/master/gcc_phat.py
+wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/pixel_ring.py
+mkdir usb_hid
+wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/spi.py
