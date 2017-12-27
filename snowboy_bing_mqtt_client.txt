@@ -11,6 +11,9 @@ USBDM         USB1 D-
 VDD 5V        5V
 GND           GND
 
+Update Mic array firmware to support 8 channel mode
+https://github.com/Fuhua-Chen/ReSpeaker_Microphone_Array_Firmware/blob/master/raw/ReSpeaker_Mic_Array_firmware_raw_0x83_20170601.bin
+
 1. Setup Armbian from armbian.com for NanoPi NEO Air.
 
 2. Enable internal audio
