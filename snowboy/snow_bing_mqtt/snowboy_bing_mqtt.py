@@ -9,28 +9,31 @@ import collections
 from snowboydetect import SnowboyDetect
 import paho.mqtt.client as mqtt
 
-clientName = "Snowboy"
-serverAddress = "192.168.31.103"
+SNOWBOY_COMMON_RES = 'resources/common.res'
+SNOWBOY_KEYWORD = 'resources/smart_mirror.umdl'
+SNOWBOY_AUDIO_GAIN = 2
+SNOWBOY_SENSITIVITY = '0.5'
 
-# write your Bing key here
+MQTT_CLIENT_NAME = 'Snowboy'
+MQTT_BROKER_ADDRESS = '192.168.31.103'
 
-KEY = "*****"
-bing = Bing(key=KEY)
+BING_KEY = '****'
+bing = Bing(key=BING_KEY)
 
 RATE = 16000
 CHANNELS = 8
 KWS_FRAMES = 10     # ms
 DOA_FRAMES = 800    # ms
 
-detector = SnowboyDetect('resources/common.res', 'resources/smart_mirror.umdl')
-detector.SetAudioGain(1)
-detector.SetSensitivity('0.5')
+detector = SnowboyDetect(SNOWBOY_COMMON_RES, SNOWBOY_KEYWORD)
+detector.SetAudioGain(SNOWBOY_AUDIO_GAIN)
+detector.SetSensitivity(SNOWBOY_SENSITIVITY)
 
 # about 5seconds
 q = Queue.Queue(maxsize=768)
 
-mqttClient = mqtt.Client(clientName)
-#mqttClient.connect(serverAddress)
+mqttClient = mqtt.Client(MQTT_CLIENT_NAME)
+#mqttClient.connect(MQTT_BROKER_ADDRESS)
 
 
 def gen_queue(q):
@@ -81,8 +84,8 @@ def main():
                                 sendKitchenLamp(1)
                             if 'lamp off' in text:
                                 sendKitchenLamp(0)
-                    except respeaker.bing_speech_api.RequestError:
-                        pass
+                    except Exception as detail:
+                        print 'Handling Bing error:', detail
                     pixel_ring.off()
 
     except KeyboardInterrupt:

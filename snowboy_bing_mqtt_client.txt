@@ -12,23 +12,31 @@ VDD 5V        5V
 GND           GND
 
 Update Mic array firmware to support 8 channel mode
+(Proof: https://github.com/respeaker/mic_array_dfu) using firmware
 https://github.com/Fuhua-Chen/ReSpeaker_Microphone_Array_Firmware/blob/master/raw/ReSpeaker_Mic_Array_firmware_raw_0x83_20170601.bin
 
-1. Setup Armbian from armbian.com for NanoPi NEO Air.
+1. Setup Armbian from armbian.com to NanoPi NEO Air (Armbian_5.34.171121_Nanopiair_Debian_stretch_next_4.13.14.img).
 
 2. Enable internal audio
 
 armbian-config->system->hardware->analog-codec->save->reboot
 
-3. Check audio card
+Check U-boot config
 
-cat /proc/asound/cards
- 0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
-                      H3 Audio Codec
- 1 [UAC20          ]: USB-Audio - ReSpeaker MicArray UAC2.0
-                      SeeedStudio ReSpeaker MicArray UAC2.0 at usb-1c1c400.usb-1, full speed
+nano /boot/armbianEnv.txt
 
-4. Setup audio config
+verbosity=1
+logo=disabled
+console=both
+disp_mode=1920x1080p60
+overlay_prefix=sun8i-h3
+overlays=analog-codec usbhost1 usbhost2
+rootdev=UUID=86e85da8-de95-45e4-bf04-5d34a8036175
+rootfstype=ext4
+usbstoragequirks=0x2537:0x1066:u,0x2537:0x1068:u
+ 
+
+3. Setup audio config
 nano /etc/asound.conf
 
 pcm.!default {
@@ -46,6 +54,7 @@ nano /usr/share/alsa/alsa.conf
 comment out 
 
 defaults.pcm.surround21.card defaults.pcm.card
+defaults.pcm.surround40.card defaults.pcm.card
 defaults.pcm.surround41.card defaults.pcm.card
 defaults.pcm.surround50.card defaults.pcm.card
 defaults.pcm.surround51.card defaults.pcm.card
@@ -67,6 +76,20 @@ pcm.hdmi cards.pcm.hdmi
 pcm.modem cards.pcm.modem
 pcm.phoneline cards.pcm.phoneline
 
+
+
+reboot
+
+
+4. Check audio card
+
+cat /proc/asound/cards
+ 0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
+                      H3 Audio Codec
+ 1 [UAC20          ]: USB-Audio - ReSpeaker MicArray UAC2.0
+                      SeeedStudio ReSpeaker MicArray UAC2.0 at usb-1c1c400.usb-1, full speed
+
+
 5. Obtain Bing API key
 
 Go to https://azure.microsoft.com/ru-ru/services/cognitive-services/speech/
@@ -75,26 +98,9 @@ Choose get API key
 
 6. Install dependencies
 
-sudo apt-get install libatlas-base-dev
-sudo apt-get install portaudio19-dev
-sudo apt-get install python-dev
-sudo apt-get install python-pip
-sudo apt-get install python-numpy
+sudo apt-get install libatlas-base-dev portaudio19-dev python-dev python-pip python-numpy
 pip install --upgrade pip
-pip install setuptools
-pip install paho-mqtt
-pip install pyaudio
-pip install requests
-pip install monotonic
-pip install webrtcvad
-pip install pyusb
+pip install setuptools 
+pip install paho-mqtt pyaudio requests monotonic webrtcvad pyusb
 
-git clone https://github.com/respeaker/respeaker_python_library.git
-cp -R respeaker_python_library/respeaker respeaker
-
-wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/bing_speech_api.py
-wget https://raw.githubusercontent.com/respeaker/mic_array/master/mic_array.py
-wget https://raw.githubusercontent.com/respeaker/mic_array/master/gcc_phat.py
-wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/pixel_ring.py
-mkdir usb_hid
-wget https://raw.githubusercontent.com/respeaker/respeaker_python_library/master/respeaker/spi.py
+python snowboy_bing_mqtt.py
