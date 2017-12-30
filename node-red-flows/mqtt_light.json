@@ -1,0 +1,124 @@
+[
+    {
+        "id": "d8977af0.ffb098",
+        "type": "tab",
+        "label": "Flow 1"
+    },
+    {
+        "id": "988df07f.666778",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "192.168.1.2",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "bb5c922c.119f5",
+        "type": "mqtt in",
+        "z": "d8977af0.ffb098",
+        "name": "",
+        "topic": "weather_station/light_level",
+        "qos": "2",
+        "broker": "988df07f.666778",
+        "x": 163.5,
+        "y": 103.33332824707031,
+        "wires": [
+            [
+                "5ddf4113.e92238",
+                "4b44985b.e7251"
+            ]
+        ]
+    },
+    {
+        "id": "5ddf4113.e92238",
+        "type": "debug",
+        "z": "d8977af0.ffb098",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 430,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "379a6ec3.4f459a",
+        "type": "switch",
+        "z": "d8977af0.ffb098",
+        "name": "level <=15 & level >=30",
+        "property": "payload.level",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "15",
+                "vt": "num"
+            },
+            {
+                "t": "gte",
+                "v": "50",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 390,
+        "y": 360,
+        "wires": [
+            [
+                "7b6131e5.329ce"
+            ],
+            [
+                "90709de7.ac81c8"
+            ]
+        ]
+    },
+    {
+        "id": "90709de7.ac81c8",
+        "type": "debug",
+        "z": "d8977af0.ffb098",
+        "name": "switch off",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 600,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "7b6131e5.329ce",
+        "type": "debug",
+        "z": "d8977af0.ffb098",
+        "name": "switch on",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 600,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "4b44985b.e7251",
+        "type": "json",
+        "z": "d8977af0.ffb098",
+        "name": "",
+        "pretty": false,
+        "x": 174.50001525878906,
+        "y": 363.3333282470703,
+        "wires": [
+            [
+                "379a6ec3.4f459a"
+            ]
+        ]
+    }
+]
