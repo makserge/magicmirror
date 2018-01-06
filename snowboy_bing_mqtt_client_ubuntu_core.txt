@@ -1,7 +1,7 @@
 Respeaker Mic Array Snowboy Bing MQTT HowTo on 4.11 kernel based Ubuntu Core 
 
 0. Setup hardware:
-Connect USB host from Nanopi Neo Air according pinout
+Connect USB host from Nanopi Neo Air according to pinout
 
 https://github.com/SeeedDocument/Respeaker_Core/raw/master/img/respeaker_core_pinmap.png
 
@@ -15,38 +15,28 @@ Update Mic array firmware to support 8 channel mode
 (Proof: https://github.com/respeaker/mic_array_dfu) using firmware
 https://github.com/Fuhua-Chen/ReSpeaker_Microphone_Array_Firmware/blob/master/raw/ReSpeaker_Mic_Array_firmware_raw_0x83_20170601.bin
 
-1. Setup Ubuntu Core from FriendlyARM (http://wiki.friendlyarm.com/wiki/index.php/NanoPi_NEO_Air) to NanoPi NEO Air (nanopi-neo-air_FriendlyCore-Xenial_4.14.0_20171213.img).
+1. Flash Ubuntu Core from FriendlyARM (http://wiki.friendlyarm.com/wiki/index.php/NanoPi_NEO_Air) to TF card (nanopi-neo-air_eflasher_4.14.0_20171213.img).
 
-2. Enable internal audio
+2. Login as root / fa
+3. Flash image to e-mmc
 
-armbian-config->system->hardware->analog-codec->save->reboot
+eflasher
 
-Check U-boot config
+Choose option 2 then type "yes" to begin flashing 
 
-nano /boot/armbianEnv.txt
+reboot and boot from e-mmc
 
-verbosity=1
-logo=disabled
-console=both
-disp_mode=1920x1080p60
-overlay_prefix=sun8i-h3
-overlays=analog-codec usbhost1 usbhost2
-rootdev=UUID=86e85da8-de95-45e4-bf04-5d34a8036175
-rootfstype=ext4
-usbstoragequirks=0x2537:0x1066:u,0x2537:0x1068:u
- 
-
-3. Setup audio config
+4. Setup audio config
 nano /etc/asound.conf
 
 pcm.!default {
     type hw
-    card 1
+    card 4
     device 0
 }
 ctl.!default {
     type hw
-    card 1
+    card 4
 }
 
 nano /usr/share/alsa/alsa.conf
@@ -81,7 +71,7 @@ pcm.phoneline cards.pcm.phoneline
 reboot
 
 
-4. Check audio card
+5. Check audio card
 
 cat /proc/asound/cards
  0 [Codec          ]: H3_Audio_Codec - H3 Audio Codec
@@ -90,13 +80,13 @@ cat /proc/asound/cards
                       SeeedStudio ReSpeaker MicArray UAC2.0 at usb-1c1c400.usb-1, full speed
 
 
-5. Obtain Bing API key
+6. Obtain Bing API key
 
 Go to https://azure.microsoft.com/ru-ru/services/cognitive-services/speech/
 then https://azure.microsoft.com/ru-ru/try/cognitive-services/?api=speech-api
 Choose get API key
 
-6. Install dependencies
+7. Install dependencies
 
 sudo apt-get install libatlas-base-dev portaudio19-dev python-dev python-pip python-numpy
 pip install --upgrade pip
