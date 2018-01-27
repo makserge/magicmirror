@@ -1,11 +1,15 @@
 # MagicMirror using OrangePI Zero Plus 2 H5 and WaveShare 4 inch IPS LCD
 
 1. Download
-Armbian_5.34.171119_Orangepizeroplus2-h5_Ubuntu_xenial_next_4.13.13
+https://dl.armbian.com/orangepizeroplus2-h5/archive/Armbian_5.38_Orangepizeroplus2-h5_Debian_stretch_next_4.14.14.7z
 from armbian.com
 
-2. Flash using Etcher
-https://etcher.io
+2. Flash using Etcher 
+https://etcher.io 
+or
+
+rufus
+http://rufus.akeo.ie/downloads/rufus-2.11p.exe
 
 3. Boot and login to console (from MacOS)
 
@@ -42,53 +46,45 @@ apt update
 apt upgrade
 
 8. Install chromium
-apt install chromium-browser
+apt install chromium
 
 9 Install XFCE
 
-apt -y install xorg lightdm xfce4 tango-icon-theme gnome-icon-theme lightdm-gtk-greeter
+apt install xorg lightdm xfce4 lightdm-gtk-greeter
 
 nano /etc/lightdm/lightdm.conf.d/11-armbian.conf
-
-replace
-[SeatDefaults]
-
-to
-[Seat:*]
-
-replace
-user-session=ubuntu
-
-to
-user-session=xfce
 
 add to the end
 
 autologin-user=magicmirror
 autologin-user-timeout=0
 
-10. Autostart XFCE
+10. NodeJS
 
-systemctl set-default graphical.target
-
-(run systemctl set-default multi-user.target to return to console login
-and then startxfce4 after login)
-
-11. Set screen rotation
-Applications->Settings->Display->Rotation->Left->Apply
-
-11. NodeJS
-
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
 
 apt install -y nodejs
 
-12. MagicMirror
+11. Install MagicMirror
 apt install libgconf-2-4
+
+Login as magicmirror
 
 git clone https://github.com/stacywebb/magicmirror_arm64
 
-cd /root/magicmirror_arm64
+mv magicmirror_arm64 MagicMirror/
+
+cd MagicMirror
+
+nano package.json
+
+replace 
+
+ "chromedriver": "^2.33.1",
+ 
+ to 
+ 
+  "chromedriver": "2.33.1",
 
 npm install
 
@@ -100,20 +96,9 @@ cd ..
 
 npm start
 
-13. Autostart MagicMirror
+12. Autostart MagicMirror
 
-mv magicmirror_arm64 /home/magicmirror/MagicMirror/
-
-chown -R magicmirror.magicmirror /home/magicmirror/MagicMirror/
-
-npm install -g pm2
-pm2 startup
-
-As magicmirror user:
-
-cd /home/magicmirror
-
-nano mm.sh
+nano /home/magicmirror/mm.sh
 
 add
 cd ~/MagicMirror
@@ -128,17 +113,64 @@ Command: /home/magicmirror/mm.sh
 
 Press OK
 
-14. TightVNC
+13. Mosquitto
 
-apt install tightvncserver
+apt install mosquitto
 
-Start
-tightvncserver :1 -geometry 800x480 -dpi 96 -nolisten tcp
+/etc/init.d/mosquitto start
 
-Stop
-tightvncserver -kill :1
+mosquitto_passwd -c /etc/mosquitto/passwd smhome
+Password:
 
-Connect
-http://www.tightvnc.com/download.php
+nano /etc/mosquitto/conf.d/default.conf
+add
 
-ipaddress:5901
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+
+
+systemctl restart mosquitto
+
+14. Node-red
+
+npm install -g --unsafe-perm node-red
+
+npm install -g pm2
+pm2 start /usr/bin/node-red
+pm2 save
+pm2 startup
+
+npm install node-red-admin
+
+node-red-admin hash-pw
+
+nano /root/.node-red/settings.js
+
+replace
+
+
+//adminAuth: {
+//    type: "credentials",
+//    users: [{
+//        username: "admin",
+//        password: "$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcx$
+//        permissions: "*"
+//    }]
+//},
+
+
+to 
+
+adminAuth: {
+    type: "credentials",
+    users: [{
+        username: "admin",
+        password: "PW_HASH_HERE",
+        permissions: "*"
+    }]
+}
+
+15. Open Node-Red dashboard
+http://192.168.43.253:1880
+
+and enter login / password
