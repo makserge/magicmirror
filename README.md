@@ -80,7 +80,7 @@ fbtft_device
 
 nano /etc/modprobe.d/fbtft.conf
 
-options fbtft_device name=piscreen gpios=dc:18,reset:2 speed=16000000 busnum=1 rotate=90 bgr=1
+options fbtft_device name=piscreen gpios=dc:18,reset:2 speed=16000000 busnum=1 rotate=270 fps=30 bgr=1
 
 apt install xserver-xorg-video-fbdev
 
@@ -115,6 +115,15 @@ add to the end
 
 autologin-user=magicmirror
 autologin-user-timeout=0
+
+nano /usr/share/lightdm/lightdm.conf.d/50-xserver-command.conf
+
+replace 
+xserver-command=X -core
+
+to
+xserver-command=X -bs -core -nocursor
+
 
 10. Install chromium
 apt install chromium-browser
