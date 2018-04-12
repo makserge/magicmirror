@@ -111,14 +111,14 @@ cat /proc/asound/cards
 
 6. Install dependencies
 
-sudo apt-get install libatlas-base-dev portaudio19-dev python-dev python-pip python-numpy
+apt install libatlas-base-dev portaudio19-dev python-dev python-pip python-numpy
 pip install --upgrade pip
 pip install setuptools 
 pip install paho-mqtt pyaudio requests monotonic webrtcvad pyusb
 pip install SpeechRecognition
 apt install flac
 pip install --upgrade google-api-python-client
-
+pip install --upgrade respeaker
 
 7. Check python snowboy_google_asr_mqtt/snowboy.py
 

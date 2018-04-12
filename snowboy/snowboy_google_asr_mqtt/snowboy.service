@@ -1,0 +1,17 @@
+[Unit]
+Description=Snowboy Google MQTT bridge
+After=network.target
+
+
+[Service]
+Environment=VIRTUAL_ENV=/home/snowboy/env
+Environment=PATH=/home/snowboy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/usr/bin/python -u /home/snowboy/snowboy_google_asr_mqtt/snowboy.py
+WorkingDirectory=/home/snowboy/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
