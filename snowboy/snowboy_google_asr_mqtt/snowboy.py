@@ -13,7 +13,7 @@ mqttBrokerLogin = ""
 mqttBrokerPassword = ""
 
 #Add your custom models here
-models = ['/root/snow_bing_mqtt/resources/smart_mirror.umdl']
+models = ['/home/snowboy/snowboy_google_asr_mqtt/resources/smart_mirror.umdl']
 
 interrupted = False
 
