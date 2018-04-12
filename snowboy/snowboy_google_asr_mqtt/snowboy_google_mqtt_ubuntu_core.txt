@@ -14,7 +14,13 @@ GND           GND
 1. Flash Ubuntu Core from FriendlyARM (http://wiki.friendlyarm.com/wiki/index.php/NanoPi_NEO_Air) to TF card (nanopi-neo-air_eflasher_4.14.0_20171213.img).
 
 2. Login as root / fa
-3. Flash image to e-mmc
+3. Add user snowboy
+
+adduser snowboy
+usermod -a -G audio snowboy
+
+
+4. Flash image to e-mmc
 
 eflasher
 
@@ -22,7 +28,7 @@ Choose option 2 then type "yes" to begin flashing
 
 reboot and boot from e-mmc
 
-4. Setup audio config
+5. Setup audio config
 nano /etc/asound.conf
 
 pcm.!default {
@@ -62,6 +68,7 @@ pcm.hdmi cards.pcm.hdmi
 pcm.modem cards.pcm.modem
 pcm.phoneline cards.pcm.phoneline
 
+6. Login as snowboy
 
 
 nano ~/.asoundrc
@@ -113,4 +120,20 @@ apt install flac
 pip install --upgrade google-api-python-client
 
 
-python snowboy_google_asr_mqtt/snowboy.py
+7. Check python snowboy_google_asr_mqtt/snowboy.py
+
+8. Add snowboy.service
+ 
+Move snowboy_google_asr_mqtt/snowboy.service to /lib/systemd/system/snowboy.service
+
+chmod 664 /lib/systemd/system/snowboy.service
+systemctl daemon-reload
+systemctl enable snowboy.service
+
+9. Check service as root
+
+reboot
+
+ps -ax | grep snowboy.py
+
+ 2965 ?        Ssl    0:02 /usr/bin/python -u /home/snowboy/snowboy_google_asr_mqtt/snowboy.py
