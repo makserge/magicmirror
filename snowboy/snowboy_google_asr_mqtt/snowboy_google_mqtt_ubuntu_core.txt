@@ -137,3 +137,36 @@ reboot
 ps -ax | grep snowboy.py
 
  2965 ?        Ssl    0:02 /usr/bin/python -u /home/snowboy/snowboy_google_asr_mqtt/snowboy.py
+ 
+10. Switch off not used services
+
+systemctl stop bluetooth.service
+systemctl disable bluetooth.service
+
+systemctl stop ModemManager.service
+systemctl disable ModemManager.service
+
+systemctl stop apt-daily.timer
+systemctl disable apt-daily.timer
+
+systemctl stop apt-daily-upgrade.timer
+systemctl disable apt-daily-upgrade.timer
+
+systemctl stop remote-fs.target
+systemctl disable remote-fs.target
+
+systemctl stop pppd-dns.service 
+systemctl disable pppd-dns.service
+
+nano /etc/rc.local
+
+comment out
+
+#if [ -e /usr/bin/setqtenv ]; then
+#. /usr/bin/setqtenv
+#/usr/bin/lcd2usb_print "CPU: {{CPU}}" "Mem: {{MEM}}" "IP: {{IP}}" "LoadAvg: {{L$
+#/opt/QtE-Demo/run.sh&
+#fi
+
+
+apt remove rpimonitor
