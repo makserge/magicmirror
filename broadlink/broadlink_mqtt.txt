@@ -1,0 +1,113 @@
+Broadlink RM mini3 to MQTT gateway on Ubuntu Core
+
+1. Login to host as root
+
+2. Create user broadlink
+
+adduser broadlink
+
+apt install python-pip
+pip2 install setuptools
+pip2 install paho-mqtt broadlink
+
+3. Login as broadlink user
+
+4. Setup MQTT-broadlink script
+
+pip install paho-mqtt broadlink
+
+git clone https://github.com/eschava/broadlink-mqtt
+
+cd broadlink-mqtt
+
+nano mqtt.conf
+
+Set 
+
+mqtt_broker = 'localhost'       # default: 'localhost'
+mqtt_port = 1883                # default: 1883
+mqtt_clientid = 'broadlink'
+mqtt_username = ''
+mqtt_password = ''
+
+replace
+device_type = 'lookup'
+
+to
+device_type = 'rm'
+
+replace
+#device_mac  = '01:23:45:67:ab:00'
+
+to 
+device_mac  = 'xxx'
+
+where xxx - actual mac address
+
+replace
+#device_host = '192.168.1.50'
+
+to 
+device_host = 'xxxx' 
+
+where xxxx is IP of RM mini3  
+
+replace 
+mqtt_topic_prefix = 'broadlink/'
+
+to 
+mqtt_topic_prefix = 'irblaster/'
+
+replace 
+broadlink_rm_temperature_interval = 120
+
+to
+broadlink_rm_temperature_interval = 0
+
+5. Start bridge
+
+python mqtt.py
+
+6. Learn bridge by recording command:
+
+Send "record" to topic
+
+irblaster/aircond/power
+
+via MQTT
+
+7. Check command: Send "replay" to topic irblaster/aircond/power
+
+8. Setup daemon
+
+As root
+
+nano /lib/systemd/system/broadlink.service
+
+[Unit]
+Description=Broadlink IR Blaster to MQTT bridge
+After=network.target
+
+[Service]
+Environment=PATH=/home/snowboy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/usr/bin/python -u /home/broadlink/broadlink-mqtt/mqtt.py
+WorkingDirectory=/home/broadlink/broadlink-mqtt/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=broadlink
+
+[Install]
+WantedBy=multi-user.target
+
+chmod 664 /lib/systemd/system/broadlink.service
+systemctl daemon-reload
+systemctl enable broadlink.service
+
+9. Check service as root
+
+reboot
+
+ps -ax | grep mqtt.py
+
+761 ?        Ss     0:00 /usr/bin/python -u /home/broadlink/broadlink-mqtt/mqtt.py
