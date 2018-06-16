@@ -122,7 +122,7 @@ Flashing:
 
 Completed
 
-2. Connect P20 pin to GND
+2. Connect P20 pin of CC2530 module to GND
 
 3. Setup zigbee2mqtt
 
@@ -176,7 +176,7 @@ advanced:
   rtscts: false
 
 
-3.3 Starting zigbee2mqtt
+3.3 Start zigbee2mqtt
 
 cd /opt/zigbee2mqtt
 npm start
@@ -197,7 +197,7 @@ When started successfully, you will see:
 2018-6-16 19:41:59 INFO Connected to MQTT server
 2018-6-16 19:41:59 INFO MQTT publish, topic: 'zigbee2mqtt/bridge/state', payload: 'online'
 
-3.4 Setup zigbee2mqtt as a daemon with systemctl
+3.4 Setup zigbee2mqtt as a daemon
 
 sudo nano /etc/systemd/system/zigbee2mqtt.service
 
@@ -273,15 +273,15 @@ Check zigbee2mqtt logs for something like this
 2018-6-16 19:58:32 INFO Connecting with device...
 2018-6-16 19:58:32 INFO MQTT publish, topic: 'zigbee2mqtt/bridge/log', payload: '{"type":"pairing","message":"connecting with device"}'
 
+4.3 After join all devices set 
+
+permit_join: false
+
+in /opt/zigbee2mqtt/data/configuration.yaml
+
 5. Click switch and check if MQTT message sent to broker
 
 Check zigbee2mqtt logs for something like this
 
 2018-6-16 20:05:00 DEBUG Recieved zigbee message with data {"cid":"genOnOff","data":{"onOff":0}}
 2018-6-16 20:05:00 INFO MQTT publish, topic: 'zigbee2mqtt/0x00158d000214f084', payload: '{"click":"single"}' 
- 
-6. After join all devices set 
-
-permit_join: false
-
-in /opt/zigbee2mqtt/data/configuration.yaml
