@@ -1,10 +1,11 @@
 Zigbee gateway using CC2530 and Xiaomi Aqara wireless switch howto
+UART version.
 
 1. Flash CC2530 module
 https://www.aliexpress.com/item/ZigBee-Wireless-Module-CC2530-Module-Internet-Of-Things-Core-Board/32503616246.html
 
 Reference
-https://github.com/Koenkk/zigbee2mqtt/wiki/Alternative-firmware-flashing-methods
+https://www.aliexpress.com/item/ZigBee-Wireless-Module-CC2530-Module-Internet-Of-Things-Core-Board/32503616246.html
 
 Flashing proccess:
 
