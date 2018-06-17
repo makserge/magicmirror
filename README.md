@@ -2,15 +2,15 @@
 
 0. SPI LCD wiring
 
-PIN		OrangePI	LCD
+PIN		    OrangePI	 LCD
 
-+5V		2			2
-GND		6			6
-LCD_RS	18			18
-LCD_SI	19			19
-RST		22			22
-LCD_SCK	23			23
-LCD_CS	24			24
++5V		    2			      2
+GND		    6			      6
+LCD_RS	  18			     18
+LCD_SI	  19			     19
+RST		    22			     22
+LCD_SCK	 23			     23
+LCD_CS	  24			     24
 
 1. Download
 https://dl.armbian.com/orangepizeroplus2-h5/Ubuntu_xenial_next.7z
