@@ -1,0 +1,341 @@
+Zigbee gateway using CC2530 and Xiaomi Aqara wireless switch howto
+
+1. Flash CC2530 module
+
+Reference
+https://github.com/Koenkk/zigbee2mqtt/wiki/Alternative-firmware-flashing-methods
+
+Flashing proccess:
+
+1.1 Download and unpack the archive with the library https://github.com/kirovilya/CCLib.
+
+1.2 Update pins in Arduino/CCLib/Examples/CCLib_proxy/CCLib_proxy.ino
+
+Replace
+
+int CC_RST   = 5;
+int CC_DC    = 4;
+int CC_DD_I  = 3;
+int CC_DD_O  = 2;
+
+to
+
+int CC_RST   = 2;
+int CC_DC    = 4;
+int CC_DD_I  = 5;
+int CC_DD_O  = 16;
+
+
+1.3 Flash NodeMCU Arduino/CCLib/Examples/CCLib_proxy/CCLib_proxy.ino sketch via Arduino IDE 
+
+1.4 Connect CC2530 to NodeMcu
+
+NodeMCU		CC2530 debug port
+
+2		RESET
+4		DC 
+5		DD
+16		DD
+GND		GND
+3.3V		3.3V
+Vin		5V
+
+1.5 Install Python 2.7 or later (tested with python 2.7.10), if not installed
+
+Install pyserial 3.0.1, if not installed 
+pip install pyserial==3.0.1
+
+1.6 Set baudrate for serial port /dev/cu.SLAB_USBtoUART to 9600
+
+1.7 Get information about the chip
+
+CCLib-master/Python/cc_info.py -p /dev/cu.SLAB_USBtoUART
+
+INFO: Found a CC2530 chip on /dev/cu.SLAB_USBtoUART
+
+Chip information:
+      Chip ID : 0xa524
+   Flash size : 256 Kb
+    Page size : 2 Kb
+    SRAM size : 8 Kb
+          USB : No
+
+Device information:
+ IEEE Address : 00124b0013de
+           PC : 0000
+
+Debug status:
+ [ ] CHIP_ERASE_BUSY
+ [ ] PCON_IDLE
+ [X] CPU_HALTED
+ [ ] PM_ACTIVE
+ [ ] HALT_STATUS
+ [ ] DEBUG_LOCKED
+ [X] OSCILLATOR_STABLE
+ [ ] STACK_OVERFLOW
+
+Debug config:
+ [ ] SOFT_POWER_MODE
+ [ ] TIMERS_OFF
+ [X] DMA_PAUSE
+ [X] TIMER_SUSPEND 
+
+1.8 Download firmware 
+
+wget https://raw.githubusercontent.com/kirovilya/files/master/CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex
+
+1.9 Flash firmware (it takes about 2 hours)
+
+python CCLib-master/Python/cc_write_flash.py -e -p /dev/cu.SLAB_USBtoUART --in=CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex
+
+INFO: Found a CC2530 chip on /dev/cu.SLAB_USBtoUART
+
+Chip information:
+      Chip ID : 0xa524
+   Flash size : 256 Kb
+    Page size : 2 Kb
+    SRAM size : 8 Kb
+          USB : No
+Sections in CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex:
+
+ Addr.    Size
+-------- -------------
+ 0x0000   8176 B 
+ 0x1ff6   10 B 
+ 0x3fff0   1 B 
+ 0x2000   239616 B 
+
+This is going to ERASE and REPROGRAM the chip. Are you sure? <y/N>:y
+
+
+Flashing:
+ - Chip erase...
+ - Flashing 4 memory blocks...
+ -> 0x0000 : 8176 bytes 
+    Progress 100%... OK
+ -> 0x1ff6 : 10 bytes 
+    Progress 100%... OK
+ -> 0x3fff0 : 1 bytes 
+    Progress 100%... OK
+ -> 0x2000 : 239616 bytes 
+    Progress 100%... OK
+
+Completed
+
+2. Connect P20 pin of CC2530 module to GND
+
+3. Connect CC2530 board to OrangePI
+
+Pin  CC2530  OrangePI
+
++5V  +5V       +5V
+GND  GND       GND
+TX   P02       8
+RX   P03       10
+
+
+4. Setup UART 
+
+4.1 Enable UART2
+
+nano /boot/armbianEnv.txt
+
+add uart2 to overlays 
+
+nano /etc/rc.local
+
+add
+stty -F /dev/ttyS2 115200
+
+
+before
+exit 0
+
+ 
+reboot
+
+4.2 Fix port permissions
+
+chmod 666 /dev/ttyS2
+
+4.3 Check
+
+stty -F /dev/ttyS2
+
+speed 115200 baud; line = 0;
+-brkint -imaxbel
+
+5. Add user zigbee
+
+adduser zigbee
+ 
+6. Setup zigbee2mqtt
+
+6.1 Install zigbee2mqtt
+
+sudo curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
+
+sudo apt-get install -y nodejs git make g++ gcc
+
+node --version  # Should output v8.X.X (at time of writing v9.11.2)
+npm --version  # Should output > 5.X.X (at time of writing 5.6.0)
+
+sudo git clone https://github.com/Koenkk/zigbee2mqtt.git /home/zigbee/zigbee2mqtt
+sudo chown -R zigbee:zigbee /home/zigbee/zigbee2mqtt
+
+cd /home/zigbee/zigbee2mqtt
+npm install
+
+6.2 Configure zigbee2mqtt
+
+nano /home/zigbee/zigbee2mqtt/data/configuration.yaml
+
+Replace 
+
+server: 'mqtt://localhost'
+# MQTT server authentication, uncomment if required:
+# user: my_user
+# password: my_password
+
+to 
+
+server: 'mqtt://localhost'
+user: '***'
+password: '***'
+
+Replace 
+
+port: /dev/ttyACM0
+
+to 
+
+port: /dev/ttyS2
+
+Add to the end
+
+advanced:
+  log_level: debug
+  # Optional: Baudrate for serial port
+  baudrate: 115200
+  # Optional: RTS / CTS Hardware Flow Control for serial port
+  rtscts: false
+
+
+6.3 Start zigbee2mqtt
+
+cd /home/zigbee/zigbee2mqtt
+npm start
+
+When started successfully, you will see:
+
+2018-6-17 20:00:47 DEBUG Using zigbee-shepherd with settings: '{"net":{"panId":6754,"channelList":[11]},"dbPath":"/home/zigbee/zigbee2mqtt/data/database.db","sp":{"baudrate":115200,"rtscts":false}}'
+2018-6-17 20:00:48 INFO Starting zigbee2mqtt version 0.0.0 (commit #4c4fcd7)
+2018-6-17 20:00:48 INFO Starting zigbee-shepherd
+2018-6-17 20:00:51 INFO zigbee-shepherd started
+2018-6-17 20:00:51 INFO Currently 0 devices are joined:
+2018-6-17 20:00:51 WARN `permit_join` set to  `true` in configuration.yaml.
+2018-6-17 20:00:51 WARN Allowing new devices to join.
+2018-6-17 20:00:51 WARN Set `permit_join` to `false` once you joined all devices.
+2018-6-17 20:00:51 INFO Zigbee: allowing new devices to join.
+2018-6-17 20:00:51 INFO Connecting to MQTT server at mqtt://localhost
+2018-6-17 20:00:51 INFO zigbee-shepherd ready
+2018-6-17 20:00:51 INFO Connected to MQTT server
+2018-6-17 20:00:51 INFO MQTT publish, topic: 'zigbee2mqtt/bridge/state', payload: 'online'
+
+6.4 Setup zigbee2mqtt as a daemon
+
+sudo nano /etc/systemd/system/zigbee2mqtt.service
+
+[Unit]
+Description=zigbee2mqtt
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/npm start
+WorkingDirectory=/home/zigbee/zigbee2mqtt
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=zigbee
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+Start daemon
+
+sudo systemctl start zigbee2mqtt
+
+Verify
+
+systemctl status zigbee2mqtt.service
+
+● zigbee2mqtt.service - zigbee2mqtt
+   Loaded: loaded (/etc/systemd/system/zigbee2mqtt.service; disabled; vendor pre
+   Active: active (running) since Sun 2018-06-17 20:06:28 UTC; 2s ago
+ Main PID: 3496 (npm)
+   CGroup: /system.slice/zigbee2mqtt.service
+           └─3496 npm
+
+Jun 17 20:06:28 orangepizeroplus2 systemd[1]: Started zigbee2mqtt.
+
+Enable
+
+sudo systemctl enable zigbee2mqtt.service
+
+
+Reference
+
+# Stopping zigbee2mqtt
+sudo systemctl stop zigbee2mqtt
+
+# Starting zigbee2mqtt
+sudo systemctl start zigbee2mqtt
+
+# View the log of zigbee2mqtt
+sudo journalctl -u zigbee2mqtt.service -f
+
+
+7. Pairing devices
+
+7.1 Enable joining devices 
+
+Set
+
+permit_join: true 
+
+in /home/zigbee/zigbee2mqtt/data/configuration.yaml
+
+7.2 Pair Xiaomi Aqara wall switch
+
+Press and hold the button on the device for +- 10 seconds (until the blue light starts blinking and stops blinking), release and wait.
+
+Check zigbee2mqtt logs for something like this
+
+2018-6-16 19:58:32 DEBUG Recieved zigbee message with data "0x00158d000214f084"
+2018-6-16 19:58:32 INFO Connecting with device...
+2018-6-16 19:58:32 INFO MQTT publish, topic: 'zigbee2mqtt/bridge/log', payload: '{"type":"pairing","message":"connecting with device"}'
+
+7.3 After join all devices set 
+
+permit_join: false
+
+in /home/zigbee/zigbee2mqtt/data/configuration.yaml
+
+8. Click switch and check if MQTT message sent to broker
+
+Check zigbee2mqtt logs for something like this
+
+2018-6-16 20:05:00 DEBUG Recieved zigbee message with data {"cid":"genOnOff","data":{"onOff":0}}
+2018-6-16 20:05:00 INFO MQTT publish, topic: 'zigbee2mqtt/0x00158d000214f084', payload: '{"click":"single"}' 
+
+9. Set convinient name to devices
+
+nano /home/zigbee/zigbee2mqtt/data/configuration.yaml
+
+devices: 
+  '0x00158d0001d82999':
+    friendly_name: 'my_occupancy_sensor'
+    retain: false
+   
