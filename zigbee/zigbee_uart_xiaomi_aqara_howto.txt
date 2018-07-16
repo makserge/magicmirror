@@ -319,7 +319,17 @@ Check zigbee2mqtt logs for something like this
 2018-6-16 19:58:32 INFO Connecting with device...
 2018-6-16 19:58:32 INFO MQTT publish, topic: 'zigbee2mqtt/bridge/log', payload: '{"type":"pairing","message":"connecting with device"}'
 
-7.3 After join all devices set 
+7.3 Pair Xiaomi Aqara temperature sensor
+
+Press and hold the button on the device for +- 10 seconds (until the blue light starts blinking and stops blinking), release and wait.
+
+Check zigbee2mqtt logs for something like this
+
+Jul 16 21:24:50 orangepizeroplus2 npm[756]: 2018-7-16 21:24:50 INFO MQTT publish, topic: 'zigbee2mqtt/0x00158d0001e81490', payload: '{"temperature":26.62,"humidity":50.45}'
+
+
+
+7.4 After join all devices set 
 
 permit_join: false
 
