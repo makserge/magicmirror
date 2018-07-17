@@ -46,7 +46,7 @@ var config = {
     {
       module: 'MMM-MQTT', //https://github.com/ottopaulsen/MMM-MQTT
       position: 'top_right',
-      header: 'Температура',
+      header: '',
       config: {
         mqttUser: '',         // Leave out for no user
         mqttPassword: '', // Leave out for no password
@@ -60,6 +60,13 @@ var config = {
             jsonpointer: '/temperature'
           },
           {
+            topic: 'zigbee2mqtt/kitchen_temp',
+            label: 'Кухня',
+            decimals: 1,
+            suffix: '°C',
+            jsonpointer: '/temperature'
+          },
+          {
             topic: 'zigbee2mqtt/living_room_temp',
             label: 'Комната',
             decimals: 1,
@@ -67,11 +74,11 @@ var config = {
             jsonpointer: '/temperature'
           },
           {
-            topic: 'zigbee2mqtt/kitchen_temp',
-            label: 'Кухня',
-            decimals: 1,
-            suffix: '°C',
-            jsonpointer: '/temperature'
+            topic: 'sensor_clock/co2_level',
+            label: 'Комната',
+            decimals: 0,
+            suffix: 'ppm',
+            jsonpointer: '/level'
           }
         ]
       }
