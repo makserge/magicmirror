@@ -148,7 +148,7 @@ nano /etc/rc.local
 
 add
 stty -F /dev/ttyS2 115200
-
+chmod 666 /dev/ttyS2
 
 before
 exit 0
@@ -156,11 +156,7 @@ exit 0
  
 reboot
 
-4.2 Fix port permissions
-
-chmod 666 /dev/ttyS2
-
-4.3 Check
+4.2 Check
 
 stty -F /dev/ttyS2
 
