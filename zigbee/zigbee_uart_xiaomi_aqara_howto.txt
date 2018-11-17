@@ -1,6 +1,8 @@
 Zigbee gateway using CC2530 and Xiaomi Aqara wireless switch howto
 UART version.
 
+Document is related to Linux / MacOS as host for all actions. 
+
 1. Flash CC2530 module
 https://www.aliexpress.com/item/ZigBee-Wireless-Module-CC2530-Module-Internet-Of-Things-Core-Board/32503616246.html
 
@@ -84,12 +86,15 @@ Debug config:
 
 1.8 Download firmware 
 
-wget https://raw.githubusercontent.com/kirovilya/files/master/CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex
+wget https://raw.githubusercontent.com/Koenkk/Z-Stack-firmware/master/coordinator/CC2530/bin/CC2530ZNP-Prod.hex
 
-1.9 Flash firmware (it takes about 2 hours)
+1.9 Make firmware compatible with CCLib
 
-python CCLib-master/Python/cc_write_flash.py -e -p /dev/cu.SLAB_USBtoUART --in=CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex
+Remove line before last one and save file as CC2530ZNP-Prod_mod.hex
 
+1.10 Flash firmware (it takes about 1.5 hours)
+
+python cc_write_flash.py -e -p /dev/cu.SLAB_USBtoUART --in=CC2530ZNP-Prod_mod.hex
 INFO: Found a CC2530 chip on /dev/cu.SLAB_USBtoUART
 
 Chip information:
@@ -98,7 +103,7 @@ Chip information:
     Page size : 2 Kb
     SRAM size : 8 Kb
           USB : No
-Sections in CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex:
+Sections in CC2530ZNP-Prod_mod.hex:
 
  Addr.    Size
 -------- -------------
@@ -107,8 +112,7 @@ Sections in CC2530ZNP-Pro-Secure_LinkKeyJoin_mod.hex:
  0x3fff0   1 B 
  0x2000   239616 B 
 
-This is going to ERASE and REPROGRAM the chip. Are you sure? <y/N>:y
-
+This is going to ERASE and REPROGRAM the chip. Are you sure? <y/N>:  y
 
 Flashing:
  - Chip erase...
@@ -156,7 +160,7 @@ exit 0
  
 reboot
 
-4.2 Check
+4.2 Check UART2
 
 stty -F /dev/ttyS2
 
@@ -226,19 +230,26 @@ npm start
 
 When started successfully, you will see:
 
-2018-6-17 20:00:47 DEBUG Using zigbee-shepherd with settings: '{"net":{"panId":6754,"channelList":[11]},"dbPath":"/home/zigbee/zigbee2mqtt/data/database.db","sp":{"baudrate":115200,"rtscts":false}}'
-2018-6-17 20:00:48 INFO Starting zigbee2mqtt version 0.0.0 (commit #4c4fcd7)
-2018-6-17 20:00:48 INFO Starting zigbee-shepherd
-2018-6-17 20:00:51 INFO zigbee-shepherd started
-2018-6-17 20:00:51 INFO Currently 0 devices are joined:
-2018-6-17 20:00:51 WARN `permit_join` set to  `true` in configuration.yaml.
-2018-6-17 20:00:51 WARN Allowing new devices to join.
-2018-6-17 20:00:51 WARN Set `permit_join` to `false` once you joined all devices.
-2018-6-17 20:00:51 INFO Zigbee: allowing new devices to join.
-2018-6-17 20:00:51 INFO Connecting to MQTT server at mqtt://localhost
-2018-6-17 20:00:51 INFO zigbee-shepherd ready
-2018-6-17 20:00:51 INFO Connected to MQTT server
-2018-6-17 20:00:51 INFO MQTT publish, topic: 'zigbee2mqtt/bridge/state', payload: 'online'
+Zigbee2mqtt requires node version >=8.11 10, you are running v9.11.2!
+
+  zigbee2mqtt:info 2018-11-17 18:13:34 Logging to directory: '/home/zigbee/zigbee2mqtt/data/log/2018-11-17.18-13-34'
+  zigbee2mqtt:debug 2018-11-17 18:13:35 Using zigbee-shepherd with settings: '{"net":{"panId":6754,"channelList":[11]},"dbPath":"/home/zigbee/zigbee2mqtt/data/database.db","sp":{"baudRate":115200,"rtscts":false}}'
+  zigbee2mqtt:debug 2018-11-17 18:13:35 Can't load state from file /home/zigbee/zigbee2mqtt/data/state.json (doesn't exsist)
+  zigbee2mqtt:info 2018-11-17 18:13:35 Starting zigbee2mqtt version 0.2.0 (commit #b0d3c2f)
+  zigbee2mqtt:info 2018-11-17 18:13:35 Starting zigbee-shepherd
+  zigbee2mqtt:info 2018-11-17 18:13:36 zigbee-shepherd started
+  zigbee2mqtt:info 2018-11-17 18:13:36 Coordinator firmware version: '20182308'
+  zigbee2mqtt:debug 2018-11-17 18:13:36 zigbee-shepherd info: {"enabled":true,"net":{"state":"Coordinator","channel":11,"panId":"0x1a62","extPanId":"0xdddddddddddddddd","ieeeAddr":"0x00124b0013def197","nwkAddr":0},"firmware":{"transportrev":2,"product":0,"version":"2.6.3","revision":20182308},"startTime":1542478416,"joinTimeLeft":0}
+  zigbee2mqtt:info 2018-11-17 18:13:36 Currently 0 devices are joined:
+  zigbee2mqtt:warn 2018-11-17 18:13:36 `permit_join` set to  `true` in configuration.yaml.
+  zigbee2mqtt:warn 2018-11-17 18:13:36 Allowing new devices to join.
+  zigbee2mqtt:warn 2018-11-17 18:13:36 Set `permit_join` to `false` once you joined all devices.
+  zigbee2mqtt:info 2018-11-17 18:13:36 Zigbee: allowing new devices to join.
+  zigbee2mqtt:info 2018-11-17 18:13:36 Connecting to MQTT server at mqtt://localhost
+  zigbee2mqtt:info 2018-11-17 18:13:36 zigbee-shepherd ready
+  zigbee2mqtt:info 2018-11-17 18:13:36 Connected to MQTT server
+  zigbee2mqtt:info 2018-11-17 18:13:36 MQTT publish, topic: 'zigbee2mqtt/bridge/state', payload: 'online'
+  zigbee2mqtt:debug 2018-11-17 18:13:36 Soft reset timeout disabled
 
 6.4 Setup zigbee2mqtt as a daemon
 
@@ -325,11 +336,10 @@ Jul 16 21:24:50 orangepizeroplus2 npm[756]: 2018-7-16 21:24:50 INFO MQTT publish
 
 
 
-7.4 After join all devices set 
+7.4 When all devices was added update /home/zigbee/zigbee2mqtt/data/configuration.yaml
 
 permit_join: false
-
-in /home/zigbee/zigbee2mqtt/data/configuration.yaml
+ 
 
 8. Click switch and check if MQTT message sent to broker
 
@@ -338,7 +348,7 @@ Check zigbee2mqtt logs for something like this
 2018-6-16 20:05:00 DEBUG Recieved zigbee message with data {"cid":"genOnOff","data":{"onOff":0}}
 2018-6-16 20:05:00 INFO MQTT publish, topic: 'zigbee2mqtt/0x00158d000214f084', payload: '{"click":"single"}' 
 
-9. Set convinient name to devices
+9. Set convinient name to devices in 
 
 nano /home/zigbee/zigbee2mqtt/data/configuration.yaml
 
