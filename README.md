@@ -149,15 +149,16 @@ nano config/config.js
 
 
 /* Magic Mirror 2
- * Config Sample
+ *
  *
  * orginal by Michael Teeuw http://michaelteeuw.nl
  * MIT Licensed.
  *
+ *
  */
 var config = {
   port: 8080,
-  ipWhitelist: ["127.0.0.1", "192.168.31.186","::1"],
+  ipWhitelist: ["127.0.0.1","::1"],
   //ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"], // Set [] to allow all IP addresses
   // or add a specific IPv4 of 192.168.1.5 :
   // ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.1.5"],
@@ -183,41 +184,50 @@ var config = {
       module: 'MMM-MQTT', //https://github.com/ottopaulsen/MMM-MQTT
       position: 'top_right',
       header: '',
-      config: {
-        mqttUser: '***',         // Leave out for no user
-        mqttPassword: '***', // Leave out for no password
-        mqttServer: 'localhost',
-        subscriptions: [
-          {
-            topic: 'zigbee2mqtt/external_temp',
-            label: 'Улица',
-            decimals: 1,
-            suffix: '°C',
-            jsonpointer: '/temperature'
-          },
-          {
-            topic: 'zigbee2mqtt/kitchen_temp',
-            label: 'Кухня',
-            decimals: 1,
-            suffix: '°C',
-            jsonpointer: '/temperature'
-          },
-          {
-            topic: 'zigbee2mqtt/living_room_temp',
-            label: 'Комната',
-            decimals: 1,
-            suffix: '°C',
-            jsonpointer: '/temperature'
-          },
-          {
-            topic: 'sensor_clock/co2_level',
-            label: 'Комната',
-            decimals: 0,
-            suffix: 'ppm',
-            jsonpointer: '/level'
-          }
-        ]
-      }
+	  config: {
+        mqttServers: [
+            {
+                address: 'localhost',  // Server address or IP address
+                port: '1883',          // Port number if other than default
+                user: 'user',          // Leave out for no user
+                password: 'password',  // Leave out for no password
+                subscriptions: [
+                    {
+                        topic: 'zigbee2mqtt/external_temp',
+						label: 'Улица',
+						decimals: 1,
+						suffix: '°C',
+						jsonpointer: '/temperature',
+                        sortOrder: 10
+                    },
+                    {
+                        topic: 'zigbee2mqtt/kitchen_temp',
+						label: 'Кухня',
+						decimals: 1,
+						suffix: '°C',
+						jsonpointer: '/temperature',
+                        sortOrder: 20,
+                    },
+                    {
+                        topic: 'zigbee2mqtt/living_room_temp',
+						label: 'Комната',
+						decimals: 1,
+						suffix: '°C',
+						jsonpointer: '/temperature',
+                        sortOrder: 30,
+                    },
+                    {
+                        topic: 'sensor_clock/co2_level',
+						label: 'Комната',
+						decimals: 0,
+						suffix: 'ppm',
+						jsonpointer: '/level',
+						sortOrder: 30,
+                    }
+                ]
+            }
+        ],
+		}
     },
     {
       module: "weatherforecast",
@@ -228,7 +238,7 @@ var config = {
         location: "Kiev,Ukraine",
 		maxNumberOfDays: 3,
         locationID: "703448", //Kiev; //ID from http://www.openweathermap.org/help/city_list.txt
-        appid: "*****"
+        appid: "APP_ID"
       }
     },
   ]
@@ -237,6 +247,7 @@ var config = {
 if (typeof module !== "undefined") {
   module.exports = config;
 }
+
 
 
 
