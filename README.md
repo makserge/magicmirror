@@ -139,29 +139,191 @@ apt install libgconf-2-4
 
 Login as magicmirror
 
-git clone https://github.com/stacywebb/magicmirror_arm64
-
-mv magicmirror_arm64 MagicMirror/
+git clone https://github.com/MichMich/MagicMirror
 
 cd MagicMirror
 
-nano package.json
-
-replace 
-
- "chromedriver": "^2.33.1",
- 
- to 
- 
-  "chromedriver": "2.33.1",
-
 npm install
 
-cp config/config.js.sample config/config.js
+nano config/config.js
+
+
+/* Magic Mirror 2
+ *
+ *
+ * orginal by Michael Teeuw http://michaelteeuw.nl
+ * MIT Licensed.
+ *
+ *
+ */
+var config = {
+  port: 8080,
+  ipWhitelist: ["127.0.0.1","::1"],
+  //ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"], // Set [] to allow all IP addresses
+  // or add a specific IPv4 of 192.168.1.5 :
+  // ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.1.5"],
+  // or IPv4 range of 192.168.3.0 --> 192.168.3.15 use CIDR format :
+  // ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.3.0/28"],
+  language: "ru",
+  timeFormat: 24,
+  units: "metric",
+  modules: [
+    {
+      module: "clock",
+      position: "top_left",
+	  config: {
+			displaySeconds: false,
+			dateFormat: "LL",
+			displayType: "digital",
+			analogPlacement: "right",
+			analogSize: "120px",
+			timezone: "Europe/Kiev"
+	  }
+    },
+    {
+      module: 'MMM-MQTT', //https://github.com/ottopaulsen/MMM-MQTT
+      position: 'top_right',
+      header: '',
+	  config: {
+        mqttServers: [
+            {
+                address: 'localhost',  // Server address or IP address
+                port: '1883',          // Port number if other than default
+                user: 'user',          // Leave out for no user
+                password: 'password',  // Leave out for no password
+                subscriptions: [
+                    {
+                        topic: 'zigbee2mqtt/external_temp',
+						label: 'Улица',
+						decimals: 1,
+						suffix: '°C',
+						jsonpointer: '/temperature',
+                        sortOrder: 10
+                    },
+                    {
+                        topic: 'zigbee2mqtt/kitchen_temp',
+						label: 'Кухня',
+						decimals: 1,
+						suffix: '°C',
+						jsonpointer: '/temperature',
+                        sortOrder: 20,
+                    },
+                    {
+                        topic: 'zigbee2mqtt/living_room_temp',
+						label: 'Комната',
+						decimals: 1,
+						suffix: '°C',
+						jsonpointer: '/temperature',
+                        sortOrder: 30,
+                    },
+                    {
+                        topic: 'sensor_clock/co2_level',
+						label: 'Комната',
+						decimals: 0,
+						suffix: 'ppm',
+						jsonpointer: '/level',
+						sortOrder: 30,
+                    }
+                ]
+            }
+        ],
+		}
+    },
+    {
+      module: "weatherforecast",
+      position: "bottom_bar",
+      header: "Прогноз погоды",
+      config: {
+		forecastEndpoint: "forecast",  
+        location: "Kiev,Ukraine",
+		maxNumberOfDays: 3,
+        locationID: "703448", //Kiev; //ID from http://www.openweathermap.org/help/city_list.txt
+        appid: "APP_ID"
+      }
+    },
+  ]
+};
+/*************** DO NOT EDIT THE LINE BELOW ***************/
+if (typeof module !== "undefined") {
+  module.exports = config;
+}
+
+
+
 
 cd vendor
 npm install
 cd ..
+
+nano css/main.css
+
+replace
+
+html {
+  cursor: none;
+  overflow: hidden;
+  background: #000;
+}
+
+to
+
+html {
+  cursor: none;
+  overflow: hidden;
+  background: #fff;
+}
+
+and
+
+body {
+  margin: 60px;
+  position: absolute;
+  height: calc(100% - 120px);
+  width: calc(100% - 120px);
+  background: #000;
+  color: #aaa;
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 400;
+  font-size: 2em;
+  line-height: 1.5em;
+  -webkit-font-smoothing: antialiased;
+}
+
+to 
+
+body {
+  margin: 20px;
+  position: absolute;
+  height: calc(100% - 40px);
+  width: calc(100% - 40px);
+  background: #fff;
+  color: #000;
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 400;
+  font-size: 2em;
+  line-height: 1.5em;
+  -webkit-font-smoothing: antialiased;
+}
+
+and
+
+.bright {
+  color: #fff;
+}
+
+to
+
+.bright {
+  color: #000;
+}
+
+
+cd modules
+git clone https://github.com/ottopaulsen/MMM-MQTT
+cd MMM-MQTT
+npm install
+
+
 
 npm start
 
